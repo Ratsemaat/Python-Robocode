@@ -1,20 +1,28 @@
 #! /usr/bin/python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import sys
 import os
-sys.path.append(os.getcwd() + "/GUI")
+from PyQt5.QtWidgets import QApplication
+
 sys.path.append(os.getcwd() + "/Objects")
 sys.path.append(os.getcwd() + "/robotImages")
 sys.path.append(os.getcwd() + "/Robots")
-from window import MainWindow
-from PyQt5.QtWidgets import QApplication
+
+interface = "CLI"
+
+if interface == "CLI":
+    sys.path.append(os.getcwd() + "/CLI")
+    from game import MainWindow
+elif interface == "GUI":
+   from window import MainWindow
+   sys.path.append(os.getcwd() + "/GUI")
+
 
 
 if __name__ == "__main__":
-
-   app = QApplication(sys.argv)
-   app.setApplicationName("Python-Robocode")
-   myapp = MainWindow()
-   myapp.show()
-   sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    app.setApplicationName("Python-Robocode")
+    myapp = MainWindow()
+    if interface=="GUI": myapp.show()
+    sys.exit(app.exec_())
