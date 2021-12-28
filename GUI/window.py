@@ -20,11 +20,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     """
     Class documentation goes here.
     """
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, allowCommentator = False):
         """
         Constructor
         """
         QMainWindow.__init__(self, parent)
+        self.allowCommentator = allowCommentator
         self.setupUi(self)
         self.countBattle = 0
         self.timer = QTimer()
@@ -74,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.countBattle += 1
         self.sceneMenu = QGraphicsScene()
         self.graphicsView_2.setScene(self.sceneMenu)
-        self.scene = Graph(self,  self.width,  self.height)
+        self.scene = Graph(self,  self.width,  self.height, self.allowCommentator)
         self.graphicsView.setScene(self.scene)
         self.scene.AddRobots(self.botList)
         self.timer.timeout.connect(self.scene.advance)

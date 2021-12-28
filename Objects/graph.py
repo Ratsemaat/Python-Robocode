@@ -9,13 +9,15 @@ from PyQt5.QtCore import QPointF, QRectF
 
 from robot import Robot
 from outPrint import outPrint
+from commentator import Commentator
 
 class Graph(QGraphicsScene):
     
-    def __init__(self,  parent, width,  height):
+    def __init__(self, parent, width,  height, allowCommentator):
         QGraphicsScene.__init__(self,  parent)
         self.setSceneRect(0, 0, width, height)
         self.Parent = parent
+        self.commentator = Commentator(allowCommentator)
         
         #self.Parent.graphicsView.centerOn(250, 250)
         self.width = width
@@ -34,7 +36,7 @@ class Graph(QGraphicsScene):
             posList = random.sample(self.grid, len(botList))
             for bot in botList:
                 try:
-                    robot = bot(self.sceneRect().size(), self, str(bot))
+                    robot = bot(self.sceneRect().size(), self, str(bot), self.commentator)
                     self.aliveBots.append(robot)
                     self.addItem(robot)
                     robot.setPos(posList.pop())

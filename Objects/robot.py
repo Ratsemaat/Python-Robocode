@@ -10,20 +10,23 @@ from PyQt5.QtCore import QPointF
 
 from physics import physics
 from bullet import Bullet
+from commentator import Commentator
 from radarField import radarField
 from animation import animation
 
 class Robot(QGraphicsItemGroup):
     
-    def __init__(self,  mapSize, parent, repr):
+    def __init__(self,  mapSize, parent, repr, commentator):
         QGraphicsItemGroup.__init__(self)
         #Attributes
+
         self.__mapSize = mapSize
         self.__parent = parent
         self.__health = 100
         self.__repr = repr
         self.__gunLock = "free"
         self.__radarLock = "Free"
+        self.__commentator = commentator
         
 
         
@@ -516,6 +519,8 @@ class Robot(QGraphicsItemGroup):
         
     def __bulletRebound(self, bullet):
         self.__changeHealth(self,  - 3*bullet.power)
+        self.__commentator.commentHit(self.__repr, bullet.robot.__repr, 3*bullet.power)
+
         try:
             if bullet.robot in self.__parent.aliveBots:
                 self.__changeHealth(bullet.robot,   2*bullet.power)
@@ -551,8 +556,8 @@ class Robot(QGraphicsItemGroup):
         except:
             target.robot.__physics.animation = target.robot.__runAnimation
             target.robot.__currentAnimation =  anim
+        self.__commentator.commentSpotted(self.__repr, target.robot.__repr)
 
-        
     def __changeHealth(self, bot, value):
         if bot.__health + value>=100:
             bot.__health = 100
@@ -567,7 +572,8 @@ class Robot(QGraphicsItemGroup):
         self.__items.remove(item)
 
     def __death(self):
-        
+        self.__commentator.commentDeath(self.__repr)
+
         try:
             self.icon.setIcon(QIcon(os.getcwd() + "/robotImages/dead.png"))
             self.icon2.setIcon(QIcon(os.getcwd() + "/robotImages/dead.png"))
