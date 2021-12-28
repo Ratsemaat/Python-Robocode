@@ -9,17 +9,16 @@ from PyQt5.QtCore import QPointF, QRectF
 
 from robot import Robot
 from outPrint import outPrint
-from commentator import Commentator
 
 class Graph(QGraphicsScene):
     
-    def __init__(self, parent, width,  height, allowCommentator, cli_input):
+    def __init__(self, parent, width,  height, commentator, cli_input):
         QGraphicsScene.__init__(self,  parent)
         self.deadBots = []
         self.aliveBots = []
         self.setSceneRect(0, 0, width, height)
         self.Parent = parent
-        self.commentator = Commentator(allowCommentator, self)
+        self.commentator = commentator
         self.cli_input = cli_input
         
         #self.Parent.graphicsView.centerOn(250, 250)
@@ -51,16 +50,16 @@ class Graph(QGraphicsScene):
         except AttributeError:
             pass
 
-    def  battleFinished(self):
+    def battleFinished(self):
         print("Battle has finished. Results:")
+        self.commentator.resolveBetting()
         try:
             self.deadBots.append(self.aliveBots[0])
             self.removeItem(self.aliveBots[0])
         except IndexError:
             pass
         j = len(self.deadBots)
-        
-        
+
         for i in range(j):
             print("N° {}:{}".format(j - i, self.deadBots[i]))
             if j-i == 1: #first place
@@ -69,15 +68,13 @@ class Graph(QGraphicsScene):
                 self.Parent.statisticDico[repr(self.deadBots[i])].second += 1
             if j-i ==3:#3rd place
                 self.Parent.statisticDico[repr(self.deadBots[i])].third += 1
-                
             self.Parent.statisticDico[repr(self.deadBots[i])].points += i
 
         if self.cli_input:
             cont = input("Continue(Y/n)")
             if cont=="n":
                 exit()
-
-        self.Parent.chooseAction()       
+        self.Parent.chooseAction()
 
                     
     def setTiles(self):
@@ -128,3 +125,4 @@ class Graph(QGraphicsScene):
             for j in range(h):
                 l.append(QPointF((i+0.5)*80, (j+0.5)*80))
         return l
+

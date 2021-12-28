@@ -15,6 +15,7 @@ from battle import Battle
 from robot import Robot
 from RobotInfo import RobotInfo
 from statistic import statistic
+from commentator import Commentator
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """
@@ -25,21 +26,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Constructor
         """
         QMainWindow.__init__(self, parent)
-        self.allowCommentator = allowCommentator
+        self.commentator = Commentator(allowCommentator, self)
         self.setupUi(self)
         self.cli_input = cli_input
         self.countBattle = 0
         self.timer = QTimer()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget.hide()
-        
-    
+        self.scene = None
+
+
+
     @pyqtSlot()
     def on_pushButton_clicked(self):
         """
         Start the last battle
         """
-        
+
         if os.path.exists(os.getcwd() + "/.datas/lastArena"):
             with open(os.getcwd() + "/.datas/lastArena",  'rb') as file:
                 unpickler = pickle.Unpickler(file)
@@ -49,8 +52,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             print("No last arena found.")
 
         self.setUpBattle(dico["width"] , dico["height"], dico["botList"] )
-        
+
     def setUpBattle(self, width, height, botList):
+
         self.tableWidget.clearContents()
         self.tableWidget.hide()
         self.graphicsView.show()
@@ -60,10 +64,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.statisticDico={}
         for bot in botList:
             self.statisticDico[self.repres(bot)] = statistic()
+        self.scene = Graph(self,  self.width,  self.height, self.commentator, self.cli_input)
         self.startBattle()
-        
+
     def startBattle(self):
-        
+
         try:
             self.timer.timeout.disconnect(self.scene.advance)
             del self.timer
@@ -73,24 +78,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         except:
             pass
+
         self.timer = QTimer()
         self.countBattle += 1
+        self.scene = Graph(self,  self.width,  self.height, self.commentator, self.cli_input)
         self.sceneMenu = QGraphicsScene()
         self.graphicsView_2.setScene(self.sceneMenu)
-        self.scene = Graph(self,  self.width,  self.height, self.allowCommentator, self.cli_input)
         self.graphicsView.setScene(self.scene)
         self.scene.AddRobots(self.botList)
         self.timer.timeout.connect(self.scene.advance)
         self.timer.start((self.horizontalSlider.value()**2)/100.0)
+        if self.cli_input and self.countBattle>1:
+            cont = input("Do you want to make bets(Y/n)")
+            if cont != "n":
+                self.commentator.initBetting()
         self.resizeEvent()
-    
+
     @pyqtSlot(int)
     def on_horizontalSlider_valueChanged(self, value):
         """
         Slot documentation goes here.
         """
         self.timer.setInterval((value**2)/100.0)
-    
+
     @pyqtSlot()
     def on_actionNew_triggered(self):
         """
@@ -98,7 +108,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.battleMenu = Battle(self)
         self.battleMenu.show()
-    
+
     @pyqtSlot()
     def on_actionNew_2_triggered(self):
         """
@@ -106,7 +116,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         # TODO: not implemented yet
         print("Not Implemented Yet")
-    
+
     @pyqtSlot()
     def on_actionOpen_triggered(self):
         """
@@ -135,7 +145,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         l = (len(self.scene.aliveBots) )
         self.sceneMenu.setSceneRect(0, 0, 170, l*80)
         p.setPos(0, (l -1)*80)
-        
+
     def chooseAction(self):
         if self.countBattle >= self.spinBox.value():
             "Menu Statistic"
@@ -149,15 +159,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.tableWidget.setItem(i, 2,  QTableWidgetItem(str(value.second)))
                 self.tableWidget.setItem(i, 3,  QTableWidgetItem(str(value.third)))
                 self.tableWidget.setItem(i, 4,  QTableWidgetItem(str(value.points)))
-               
+
                 i += 1
-                
-                
+
+
             self.countBattle = 0
             self.timer.stop()
+            exit()
         else:
             self.startBattle()
-            
+
     def repres(self, bot):
         repres = repr(bot).split(".")
         return repres[1].replace("'>", "")
+
+    def getScene(self):
+        return self.scene
