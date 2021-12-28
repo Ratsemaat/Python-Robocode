@@ -13,11 +13,14 @@ from commentator import Commentator
 
 class Graph(QGraphicsScene):
     
-    def __init__(self, parent, width,  height, allowCommentator):
+    def __init__(self, parent, width,  height, allowCommentator, cli_input):
         QGraphicsScene.__init__(self,  parent)
+        self.deadBots = []
+        self.aliveBots = []
         self.setSceneRect(0, 0, width, height)
         self.Parent = parent
-        self.commentator = Commentator(allowCommentator)
+        self.commentator = Commentator(allowCommentator, self)
+        self.cli_input = cli_input
         
         #self.Parent.graphicsView.centerOn(250, 250)
         self.width = width
@@ -30,8 +33,6 @@ class Graph(QGraphicsScene):
         
         """
         """
-        self.aliveBots = []
-        self.deadBots = []
         try:
             posList = random.sample(self.grid, len(botList))
             for bot in botList:
@@ -51,7 +52,7 @@ class Graph(QGraphicsScene):
             pass
 
     def  battleFinished(self):
-        print("battle terminated")
+        print("Battle has finished. Results:")
         try:
             self.deadBots.append(self.aliveBots[0])
             self.removeItem(self.aliveBots[0])
@@ -70,7 +71,12 @@ class Graph(QGraphicsScene):
                 self.Parent.statisticDico[repr(self.deadBots[i])].third += 1
                 
             self.Parent.statisticDico[repr(self.deadBots[i])].points += i
-                
+
+        if self.cli_input:
+            cont = input("Continue(Y/n)")
+            if cont=="n":
+                exit()
+
         self.Parent.chooseAction()       
 
                     

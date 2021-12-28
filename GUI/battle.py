@@ -46,7 +46,7 @@ class Battle(QDialog, Ui_Dialog):
                         
         for key in self.listBots.keys():
             self.listWidget.addItem(key)
-    
+
     @pyqtSlot()
     def on_pushButton_clicked(self):
         """

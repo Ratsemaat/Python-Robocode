@@ -20,13 +20,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     """
     Class documentation goes here.
     """
-    def __init__(self, parent = None, allowCommentator = False):
+    def __init__(self, parent = None, allowCommentator = False, cli_input = False):
         """
         Constructor
         """
         QMainWindow.__init__(self, parent)
         self.allowCommentator = allowCommentator
         self.setupUi(self)
+        self.cli_input = cli_input
         self.countBattle = 0
         self.timer = QTimer()
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -68,14 +69,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             del self.timer
             del self.scene
             del self.sceneMenu
+            print(f"Battle {self.countBattle} starts.")
+
         except:
             pass
-            
         self.timer = QTimer()
         self.countBattle += 1
         self.sceneMenu = QGraphicsScene()
         self.graphicsView_2.setScene(self.sceneMenu)
-        self.scene = Graph(self,  self.width,  self.height, self.allowCommentator)
+        self.scene = Graph(self,  self.width,  self.height, self.allowCommentator, self.cli_input)
         self.graphicsView.setScene(self.scene)
         self.scene.AddRobots(self.botList)
         self.timer.timeout.connect(self.scene.advance)

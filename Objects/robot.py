@@ -10,7 +10,6 @@ from PyQt5.QtCore import QPointF
 
 from physics import physics
 from bullet import Bullet
-from commentator import Commentator
 from radarField import radarField
 from animation import animation
 
@@ -152,7 +151,9 @@ class Robot(QGraphicsItemGroup):
         
         #self.a = time.time()
 
-        
+    def getHealth(self):
+        return self.__health
+
     def advance(self, i):
         """
         if i ==1:
@@ -519,7 +520,7 @@ class Robot(QGraphicsItemGroup):
         
     def __bulletRebound(self, bullet):
         self.__changeHealth(self,  - 3*bullet.power)
-        self.__commentator.commentHit(self.__repr, bullet.robot.__repr, 3*bullet.power)
+        self.__commentator.commentHit(self.__repr__(), bullet.robot.__repr__(), 3*bullet.power)
 
         try:
             if bullet.robot in self.__parent.aliveBots:
@@ -556,7 +557,7 @@ class Robot(QGraphicsItemGroup):
         except:
             target.robot.__physics.animation = target.robot.__runAnimation
             target.robot.__currentAnimation =  anim
-        self.__commentator.commentSpotted(self.__repr, target.robot.__repr)
+        self.__commentator.commentSpotted(self.__repr__(), target.robot.__repr__())
 
     def __changeHealth(self, bot, value):
         if bot.__health + value>=100:
@@ -572,8 +573,6 @@ class Robot(QGraphicsItemGroup):
         self.__items.remove(item)
 
     def __death(self):
-        self.__commentator.commentDeath(self.__repr)
-
         try:
             self.icon.setIcon(QIcon(os.getcwd() + "/robotImages/dead.png"))
             self.icon2.setIcon(QIcon(os.getcwd() + "/robotImages/dead.png"))
@@ -582,6 +581,7 @@ class Robot(QGraphicsItemGroup):
             pass
         self.__parent.deadBots.append(self)
         self.__parent.aliveBots.remove(self)
+        self.__commentator.commentDeath(self.__repr__())
         try:
             self.onRobotDeath()
         except:
@@ -590,7 +590,7 @@ class Robot(QGraphicsItemGroup):
         self.__parent.removeItem(self)
         if  len(self.__parent.aliveBots) <= 1:
             self.__parent.battleFinished()
-            
+
     def __repr__(self):
         repr = self.__repr.split(".")
         return repr[1].replace("'>", "")

@@ -14,7 +14,7 @@ from robot import Robot
 from PyQt5.QtWidgets import QApplication
 
 if __name__ == "__main__":
-    cli_input = False
+    cli_input = True
     app = QApplication(sys.argv)
     app.setApplicationName("Python-Robocode")
     commentator = True
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
                     bots = []
             elif k=="3":
-                myapp = MainWindow(allowCommentator=commentator)
+                myapp = MainWindow(allowCommentator=commentator, cli_input=True)
                 if gui:
                     myapp.show()
                 myapp.setUpBattle(sz, sz, bots)
