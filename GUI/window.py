@@ -74,7 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             del self.timer
             del self.scene
             del self.sceneMenu
-            print(f"Battle {self.countBattle} starts.")
+
 
         except:
             pass
@@ -86,12 +86,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsView_2.setScene(self.sceneMenu)
         self.graphicsView.setScene(self.scene)
         self.scene.AddRobots(self.botList)
-        self.timer.timeout.connect(self.scene.advance)
-        self.timer.start((self.horizontalSlider.value()**2)/100.0)
         if self.cli_input and self.countBattle>1:
             cont = input("Do you want to make bets(Y/n)")
             if cont != "n":
                 self.commentator.initBetting()
+            print(f"Battle {self.countBattle-1} starts.")
+        self.timer.timeout.connect(self.scene.advance)
+        self.timer.start((self.horizontalSlider.value()**2)/100.0)
+
         self.resizeEvent()
 
     @pyqtSlot(int)

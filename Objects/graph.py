@@ -52,7 +52,6 @@ class Graph(QGraphicsScene):
 
     def battleFinished(self):
         print("Battle has finished. Results:")
-        self.commentator.resolveBetting()
         try:
             self.deadBots.append(self.aliveBots[0])
             self.removeItem(self.aliveBots[0])
@@ -64,11 +63,13 @@ class Graph(QGraphicsScene):
             print("N° {}:{}".format(j - i, self.deadBots[i]))
             if j-i == 1: #first place
                 self.Parent.statisticDico[repr(self.deadBots[i])].first += 1
+
             if j-i == 2: #2nd place
                 self.Parent.statisticDico[repr(self.deadBots[i])].second += 1
             if j-i ==3:#3rd place
                 self.Parent.statisticDico[repr(self.deadBots[i])].third += 1
             self.Parent.statisticDico[repr(self.deadBots[i])].points += i
+        self.commentator.resolveBetting(self.deadBots[j-1])
 
         if self.cli_input:
             cont = input("Continue(Y/n)")

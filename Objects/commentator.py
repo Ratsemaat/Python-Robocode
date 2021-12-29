@@ -1,9 +1,10 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
-
+import re
 import time, os, random
 
 from robot import Robot
+from collections import Counter
 
 
 class Commentator():
@@ -15,6 +16,7 @@ class Commentator():
         self.allowBetting = betting
         self.name = name
         self.spottingDict = dict()
+        self.bets = []
 
     def commentHealth(self):
         print(f'{self.name}: Current status:')
@@ -40,13 +42,47 @@ class Commentator():
         print(f'{self.name}: {target} was hit by {attacker} for {dmg} damage.')
 
     def initBetting(self):
-        robs=[]
+        robs = []
         for item in self.window.getScene().items():
             if isinstance(item, Robot):
-                robs.append(item)
-        for i, rob in enumerate(robs):
-            print(f"[{i}] {rob}")
-        bet = input("Place your bets: ")
+                robs.append(str(item))
+        amounts = (Counter(robs))
+        print(f"Participants:")
+        ctr = 1
+        ids = dict()
+        for bot, amount in amounts.items():
+            print(
+                f"#{ctr} Robot type: {bot}, on battlefield: {amount}. Coefficient: {round(len(robs) / amounts[bot], 2)}")
+            ids[ctr] = bot
+            ctr += 1
 
-    def resolveBetting(self):
-        print(self.window)
+        while True:
+            bet = input("Place your bets: ")
+            robot = None
+            for i in ids.keys():
+                if re.search(r"\B" + re.escape("#" + str(i)) + r"\b", bet, re.IGNORECASE):
+                    robot = ids[i]
+            if re.search(r"\b(bet|panu.*|wage?|pan.*|vean kihla|place)\b", bet, re.IGNORECASE) and robot:
+                k = re.search(r'(?<!#)\b\d+\.\d+\b|(?<!#)\b\d+,\d+\b|(?<!#)\b\d+\b', bet, re.IGNORECASE)
+                if k:
+                    confirmed = input(f"Confirm {k.group(0)} bet on {robot}?(y/N): ")
+                    if confirmed == "y":
+                        self.bets = (robot, k.group(0), round(len(robs) / amounts[robot], 2))
+                        break
+                    elif confirmed == "-1":
+                        break
+                    else:
+                        continue
+                else:
+                    print("Did not catch it. Can you try again please or press -1 to escape betting")
+            else:
+                print("Did not catch it. Can you try again please or press -1 to escape betting")
+
+    def resolveBetting(self, data):
+        print(data)
+        print(self.bets[0])
+        if self.bets[0] == str(data):
+            print(f"Correct bet! Received {round(float(self.bets[1]) * float(self.bets[2]),2)} currency")
+        else:
+            print(f"Wrong bet! Lost {self.bets[1]} currency")
+
