@@ -79,8 +79,7 @@ class Commentator():
                 print("Did not catch it. Can you try again please or press -1 to escape betting")
 
     def resolveBetting(self, data):
-        print(data)
-        print(self.bets[0])
+
         if self.bets[0] == str(data):
             print(f"Correct bet! Received {round(float(self.bets[1]) * float(self.bets[2]),2)} currency")
         else:
