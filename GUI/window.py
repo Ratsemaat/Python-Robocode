@@ -5,6 +5,7 @@ Module implementing MainWindow.
 """
 
 import os,  pickle
+import sys
 
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QHeaderView, QTableWidgetItem
 from PyQt5.QtCore import pyqtSlot, QTimer
@@ -167,7 +168,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.countBattle = 0
             self.timer.stop()
-            exit()
+            sys.exit()
         else:
             self.startBattle()
 

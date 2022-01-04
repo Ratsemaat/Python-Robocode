@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #-*- coding: utf-8 -*-
-
+import sys
 import time, os, random
 
 from PyQt5.QtWidgets import QGraphicsScene, QMessageBox, QGraphicsRectItem
@@ -74,7 +74,7 @@ class Graph(QGraphicsScene):
         if self.cli_input:
             cont = input("Continue(Y/n)")
             if cont=="n":
-                exit()
+                sys.exit()
         self.Parent.chooseAction()
 
                     
