@@ -47,6 +47,7 @@ class Commentator():
             if isinstance(item, Robot):
                 robs.append(str(item))
         amounts = (Counter(robs))
+        print("You have infinite money. Example bet might look something like this:  I will bet 10000 on MegaRobot")
         print(f"Participants:")
         ctr = 1
         ids = dict()
