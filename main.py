@@ -51,7 +51,7 @@ if __name__ == "__main__":
                       f"Press 2 to change field size. Current size: {sz}\n"+
                       f"Press 3 to start battles.\n"+
                       f"Press 4 to turn on/off GUI. Showing GUI: {gui}.\n" +
-                      f"Press 5 to turn on/off Commentator. Commentartor allowed: {gui}.\n" +
+                      f"Press 5 to turn on/off Commentator. Commentartor allowed: {commentator}.\n" +
                       f"Your input: ")
             if k == "1":
                 for key, value in temp_dict.items():
@@ -86,8 +86,9 @@ if __name__ == "__main__":
                 myapp.startBattle()
                 break
             elif k=="4":
-                gui= not gui
-                break
+                gui = not gui
+            elif k=="5":
+                commentator = not commentator
     else:
         myapp = MainWindow(allowCommentator=commentator)
         myapp.show()

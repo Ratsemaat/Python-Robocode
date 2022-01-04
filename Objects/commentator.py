@@ -58,6 +58,8 @@ class Commentator():
 
         while True:
             bet = input("Place your bets: ")
+            if bet==-1:
+                return
             robot = None
             for i in ids.keys():
                 if re.search(r"\B" + re.escape("#" + str(i)) + r"\b", bet, re.IGNORECASE):
@@ -79,9 +81,11 @@ class Commentator():
                 print("Did not catch it. Can you try again please or press -1 to escape betting")
 
     def resolveBetting(self, data):
-
+        if not self.bets:
+            return
         if self.bets[0] == str(data):
             print(f"Correct bet! Received {round(float(self.bets[1]) * float(self.bets[2]),2)} currency")
         else:
             print(f"Wrong bet! Lost {self.bets[1]} currency")
+        self.bets=[]
 
