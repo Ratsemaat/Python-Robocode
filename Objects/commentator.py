@@ -62,9 +62,10 @@ class Commentator():
                 return
             robot = None
             for i in ids.keys():
-                if re.search(r"\B" + re.escape("#" + str(i)) + r"\b", bet, re.IGNORECASE):
+                if re.search(r"\B" + re.escape("#" + str(i)) + r"\b", bet, re.IGNORECASE) or\
+                        re.search(r'\b'+re.escape(ids[i])+r'\b', bet, re.IGNORECASE):
                     robot = ids[i]
-            if re.search(r"\b(bet|panu.*|wage?|pan.*|vean kihla|place)\b", bet, re.IGNORECASE) and robot:
+            if robot:
                 k = re.search(r'(?<!#)\b\d+\.\d+\b|(?<!#)\b\d+,\d+\b|(?<!#)\b\d+\b', bet, re.IGNORECASE)
                 if k:
                     confirmed = input(f"Confirm {k.group(0)} bet on {robot}?(y/N): ")
