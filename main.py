@@ -44,7 +44,7 @@ if __name__ == "__main__":
         temp_dict = {}
         for i, key in enumerate(listBots.keys()):
             temp_dict[i + 1] = key
-        gui = True
+        gui = False
         bots = []
         while True:
             k = input(f"Press 1 to pick tanks. Current tanks: {alive_robots}\n"+

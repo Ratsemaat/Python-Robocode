@@ -58,7 +58,7 @@ class Commentator():
 
         while True:
             bet = input("Place your bets: ")
-            if bet==-1:
+            if bet=="-1":
                 return
             robot = None
             for i in ids.keys():
